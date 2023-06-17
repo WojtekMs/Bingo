@@ -65,13 +65,17 @@ bool loadFont(sf::Font& font)
     return true;
 }
 
-sf::Text drawNumber(const Config& config, const int row, const int col, const int number)
+sf::Text drawNumber(const Config& config,
+                    const sf::Font& font,
+                    const int row,
+                    const int col,
+                    const int number)
 {
     constexpr int characterSize = 170;
     sf::Text text(std::to_string(number), font, characterSize);
     text.setFillColor(sf::Color::Black);
 
-    // set origin 
+    // set origin
     sf::Vector2f size{text.getGlobalBounds().width, text.getGlobalBounds().height};
     sf::Vector2f position{text.getLocalBounds().left, text.getLocalBounds().top};
     text.setOrigin(size / 2.f + position);
@@ -86,23 +90,46 @@ sf::Text drawNumber(const Config& config, const int row, const int col, const in
                           (col + 1 * config.linePixelWidth) + (col * squareWidth);
     const float numberY = config.boardUpperLeftCorner.y +
                           (row + 1 * config.linePixelWidth) + (row * squareWidth);
-    text.setPosition(sf::Vector2f{numberX, numberY} + sf::Vector2f{squareWidth, squareHeight} / 2.f);
+    text.setPosition(sf::Vector2f{numberX, numberY} +
+                     sf::Vector2f{squareWidth, squareHeight} / 2.f);
     return text;
 }
 
 void composeAndSaveToFile(sf::Texture& bingoTexture,
-                          std::vector<std::reference_wrapper<sf::Drawable>> drawables,
+                          sf::Sprite& bingoSprite,
+                          const std::vector<sf::Text>& numbers,
                           std::filesystem::path file)
 {
     sf::RenderTexture rtexture;
     auto size = bingoTexture.getSize();
     rtexture.create(size.x, size.y);
-    for (auto& drawable : drawables) {
-        rtexture.draw(drawable.get());
+    rtexture.draw(bingoSprite);
+    for (auto& number : numbers) {
+        fmt::print("Drawing..\n");
+        rtexture.draw(number);
     }
     rtexture.display();
     fmt::print("saving {}\n", file.string());
     auto texture = rtexture.getTexture();
     auto image = texture.copyToImage();
     image.saveToFile(file.string());
+}
+
+void drawBingo(const Matrix<int>& bingoBoard,
+               sf::Texture& bingoTexture,
+               const Config& config,
+               sf::Font& font,
+               std::filesystem::path file)
+{
+    sf::Sprite bingoSprite(bingoTexture);
+    std::vector<sf::Text> numbers{};
+    for (size_t row = 0, id = 0; row < bingoBoard.size(); ++row) {
+        for (size_t col = 0; col < bingoBoard[row].size(); ++col, ++id) {
+            const int number = bingoBoard[row][col];
+            fmt::print("row: {}, col: {}, id: {}, number: {}\n", row, col, id, number);
+            numbers.emplace_back(drawNumber(config, font, row, col, number));
+        }
+    }
+    fmt::print("Composing img and saving to file\n");
+    composeAndSaveToFile(bingoTexture, bingoSprite, numbers, file);
 }

@@ -2,8 +2,8 @@ add_executable(${PROJECT_NAME} main.cpp)
 add_library(${PROJECT_NAME}-lib)
 target_sources(
   ${PROJECT_NAME}-lib
-  PRIVATE parser/JsonParser.cpp utils.cpp
-  PUBLIC parser/JsonParser.hpp parser/IParser.hpp utils.hpp)
+  PRIVATE parser/JsonParser.cpp bingo/bingo.cpp utils.cpp
+  PUBLIC parser/JsonParser.hpp parser/IParser.hpp bingo/generator.hpp bingo/bingo.hpp utils.hpp)
 
 target_include_directories(${PROJECT_NAME}-lib
                            PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
