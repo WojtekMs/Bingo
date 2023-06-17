@@ -1,0 +1,6 @@
+build
+extract.sh
+world_bank*
+.vscode
+a.out
+generated_bingos

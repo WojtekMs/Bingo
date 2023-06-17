@@ -1,0 +1,8 @@
+{
+    "board_upper_left_corner": {"x": 215, "y": 1987},
+    "board_upper_right_corner": {"x": 3128, "y": 1987},
+    "line_pixel_width": 10,
+    "generate_bingos_count": 5,
+    "generate_bingos_directory": "../generated_bingos",
+    "original_bingo_board_file": "../assets/bingo1.jpg"
+}
