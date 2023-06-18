@@ -2,7 +2,9 @@
     "board_upper_left_corner": {"x": 215, "y": 1987},
     "board_upper_right_corner": {"x": 3128, "y": 1987},
     "line_pixel_width": 10,
-    "generate_bingos_count": 5,
+    "generated_numbers_font_size": 250,
+    "generate_bingos_count": 250,
     "generate_bingos_directory": "../generated_bingos",
-    "original_bingo_board_file": "../assets/bingo1.jpg"
+    "original_bingo_board_file": "../assets/bingo1.jpg",
+    "font_file": "../assets/Cardo-Regular.ttf"
 }

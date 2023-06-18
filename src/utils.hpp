@@ -1,6 +1,6 @@
 #pragma once
 
-#include "bingo/bingo.hpp"
+#include "bingo/Bingo.hpp"
 #include "parser/Config.hpp"
 
 #include <SFML/Graphics.hpp>

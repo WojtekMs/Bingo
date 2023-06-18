@@ -1,26 +1,14 @@
-#include "bingo/bingo.hpp"
+#include "bingo/Bingo.hpp"
+#include "drawer/BingoDrawer.hpp"
 #include "parser/JsonParser.hpp"
 #include "utils.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <fmt/format.h>
-#include <span>
 #include <iostream>
-
-sf::Texture bingoTexture;
-sf::Font font;
-
-void print_bingo(const Matrix<int>& bingo, int index) {
-    std::cout << "Bingo nr " << index << "\n";
-    for (auto& row : bingo) {
-        for (auto& val : row) {
-            std::cout << std::setw(2) << val << " ";
-        }
-        std::cout << "\n";
-    }
-    std::cout << "--------------------\n";
-    std::cout << std::endl;
-}
+#include <random>
+#include <range/v3/view/enumerate.hpp>
+#include <span>
 
 int main(const int argc, const char** argv)
 {
@@ -35,25 +23,23 @@ int main(const int argc, const char** argv)
         fmt::print(stderr, "could not read file: {}\n", args.back());
         return EXIT_FAILURE;
     }
+    std::random_device random_device;
+    std::mt19937 mt_engine{random_device()};
     const JsonParser parser;
     const auto config = parser.parseConfig(*content);
+    drawer::BingoDrawer bingoDrawer(config);
+
     fmt::print("{}\n", config.toString());
 
-    // read the graphics
-    if (!loadBingoBoard(config, bingoTexture)) {
-        return EXIT_FAILURE;
+    const auto bingoBoards =
+        bingo::makeUniqueRandomBingos(mt_engine, config.generateBingosCount);
+    for (const auto& [id, board] : ranges::views::enumerate(bingoBoards)) {
+        const std::string filename = "bingo" + std::to_string(id) + ".jpg";
+        const std::filesystem::path outputFile =
+            config.generateBingosDirectory / filename;
+        if (!bingoDrawer.saveToFile(board, outputFile)) {
+            fmt::print("Could not save bingo {}", outputFile.string());
+        }
     }
-    if (!loadFont(font)) {
-        return EXIT_FAILURE;
-    }
-    fmt::print("Generating bingo\n");
-    const auto bingoBoard = make_random_bingo();
-    print_bingo(bingoBoard, 1);
-    int id = 1;
-    const std::string filename = "bingo" + std::to_string(id) + ".jpg";
-    const std::filesystem::path outputFile = config.generateBingosDirectory / filename;
-    fmt::print("Drawing {}\n", outputFile.string());
-    drawBingo(bingoBoard, bingoTexture, config, font, outputFile);
-
     return EXIT_SUCCESS;
 }

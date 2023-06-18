@@ -105,7 +105,6 @@ void composeAndSaveToFile(sf::Texture& bingoTexture,
     rtexture.create(size.x, size.y);
     rtexture.draw(bingoSprite);
     for (auto& number : numbers) {
-        fmt::print("Drawing..\n");
         rtexture.draw(number);
     }
     rtexture.display();
@@ -126,10 +125,8 @@ void drawBingo(const Matrix<int>& bingoBoard,
     for (size_t row = 0, id = 0; row < bingoBoard.size(); ++row) {
         for (size_t col = 0; col < bingoBoard[row].size(); ++col, ++id) {
             const int number = bingoBoard[row][col];
-            fmt::print("row: {}, col: {}, id: {}, number: {}\n", row, col, id, number);
             numbers.emplace_back(drawNumber(config, font, row, col, number));
         }
     }
-    fmt::print("Composing img and saving to file\n");
     composeAndSaveToFile(bingoTexture, bingoSprite, numbers, file);
 }

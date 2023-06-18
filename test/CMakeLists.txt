@@ -14,9 +14,11 @@ FetchContent_MakeAvailable(googletest)
 add_executable(
   ${PROJECT_NAME}-ut
   ${CMAKE_CURRENT_SOURCE_DIR}/JsonParserTest.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/AnalysisTest.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/bingo/BingoTest.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/bingo/BoardTest.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/test_utils.cpp)
 target_link_libraries(${PROJECT_NAME}-ut ${PROJECT_NAME}-lib gtest_main)
+target_include_directories(${PROJECT_NAME}-ut PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 include(GoogleTest)
 gtest_discover_tests(${PROJECT_NAME}-ut)

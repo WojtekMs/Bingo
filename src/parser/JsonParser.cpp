@@ -15,11 +15,13 @@ Config JsonParser::parseConfig(const std::string& data) const
 {
     namespace nh = nlohmann;
     const std::vector<std::string> attributes{"board_upper_left_corner",
-                                        "board_upper_right_corner",
-                                        "line_pixel_width",
-                                        "generate_bingos_count",
-                                        "generate_bingos_directory",
-                                        "original_bingo_board_file"};
+                                              "board_upper_right_corner",
+                                              "line_pixel_width",
+                                              "generate_bingos_count",
+                                              "generate_bingos_directory",
+                                              "original_bingo_board_file",
+                                              "font_file",
+                                              "generated_numbers_font_size"};
     nh::json json = nh::json::parse(data);
     if (anyAttributeDoesNotExist(json, attributes)) {
         fmt::print("Some required attributes are missing");
@@ -31,9 +33,11 @@ Config JsonParser::parseConfig(const std::string& data) const
         .boardUpperLeftCorner{upperLeft["x"], upperLeft["y"]},
         .boardUpperRightCorner{upperRight["x"], upperRight["y"]},
         .linePixelWidth{json["line_pixel_width"]},
+        .generatedNumbersFontSize{json["generated_numbers_font_size"]},
         .generateBingosCount{json["generate_bingos_count"]},
         .generateBingosDirectory{std::string{json["generate_bingos_directory"]}},
-        .originalBingoBoardFile{std::string{json["original_bingo_board_file"]}}};
+        .originalBingoBoardFile{std::string{json["original_bingo_board_file"]}},
+        .fontFile{std::string{json["font_file"]}}};
 }
 
 namespace
